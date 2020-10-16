@@ -3,29 +3,26 @@
 function appController($scope, $element, $attrs) {
   const ctrl = this
   ctrl.showTagList = false;
-  ctrl.currentText = 'test text';
-  ctrl.users = [
-    { 'userID': 1, 'name': 'Kevin' },
-    { 'userID': 2, 'name': 'Jeff' },
-    { 'userID': 3, 'name': 'Bryan' },
-    { 'userID': 4, 'name': 'Gabbey' },
-  ];
+  
   ctrl.matchedUser = '';
 
   ctrl.toggleTagList = function (inputBool) {
     ctrl.showTagList = inputBool
   }
-  ctrl.updateText = function (newText) {
-    ctrl.currentText = newText
-  }
+  
   ctrl.updateMatchedUser = function (newMatchedUser) {
     ctrl.matchedUser = newMatchedUser
   }
 
-  $scope.$on('updateCurrentText', function (events, args) {
-    console.log(args)
+  $scope.$on('sendCurrentText', function (events, text, key) {
+    $scope.$broadcast('textToUserSelect', text, key)
+  })
+
+  $scope.$on('sendMatchedUser', function (events, user) {
+    $scope.$broadcast('enterMatchedUser', user)
   })
 }
+
 
 angular.module('myApp', [
   'ngRoute'

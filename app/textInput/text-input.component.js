@@ -1,12 +1,21 @@
 function textInputController($scope, $element) {
     const ctrl = this;
-    console.log(ctrl.currentText)
-    $scope.updateCurrentText = function (text) {
-        $scope.$emit('updateCurrentText', text)
-    }
+
+    $scope.currentText = ''
+
     
-    $element.on('keyup', function () {
-        $scope.updateCurrentText($element[0].children[0].value)
+
+    $scope.sendCurrentText = function (text, key) {
+        $scope.$emit('sendCurrentText', text, key)
+    }
+
+    $element.on('keyup', function (e) {
+        $scope.sendCurrentText($element[0].children[0].value, e.key)
+    })
+
+    $scope.$on('enterMatchedUser', function (events, user) {
+        $scope.currentText = $scope.currentText.substring(0, $scope.currentText.lastIndexOf('@') + 1) + user.name
+        $scope.$apply()
     })
 }
 
@@ -15,12 +24,10 @@ angular.
     component('textInput', {
         template:
     `<textarea
-      #textBox
+    ng-model='currentText'
+    value='currentText'
       class="textarea"
       cols='80'
     ></textarea>`,
-        controller: textInputController,
-        bindings: {
-            currentText: '<'
-        }
+        controller: textInputController
     })
