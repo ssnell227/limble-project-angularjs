@@ -1,11 +1,13 @@
 function userSelectController($scope, $element) {
   const ctrl = this
+  
   ctrl.users = [
     { 'userID': 1, 'name': 'Kevin' },
     { 'userID': 2, 'name': 'Jeff' },
     { 'userID': 3, 'name': 'Bryan' },
     { 'userID': 4, 'name': 'Gabbey' },
   ];
+
   $scope.filteredUsers = ctrl.users
   $scope.showUserSelect = false
   $scope.matchedUser = $scope.filteredUsers[$scope.filteredUsers.indexOf(item => item.match === true)]
