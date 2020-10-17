@@ -28,3 +28,12 @@
   background-color: #3273dc;
   color: #fff;
 }
+
+.dropdown-item {
+  cursor: pointer
+}
+
+.dropdown-item:hover {
+  background-color: #6f8fc2;
+  color: #fff
+}

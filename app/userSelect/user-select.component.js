@@ -53,6 +53,13 @@ function userSelectController($scope, $element) {
     $scope.matchedUser = $scope.filteredUsers[$scope.filteredUsers.findIndex(user => user.match)]
   }
 
+  $scope.handleClick = function (userId) {
+    $scope.matchedUser = $scope.filteredUsers[$scope.filteredUsers.findIndex(user => user.userID === userId)]
+    $scope.matchedUser.match = true
+    $scope.showUserSelect = false
+    $scope.$emit('sendMatchedUser', $scope.matchedUser)
+  }
+
   $scope.watchKey = function (key) {
     const currentMatchIndex = $scope.filteredUsers.findIndex(user => user.match)
     if (key === 'Enter' && $scope.showUserSelect) {
@@ -103,7 +110,7 @@ angular.
         <div class='dropdown-menu'>
           <div class='dropdown-content'>
             <div  ng-repeat='user in filteredUsers'>
-            <div ng-class='{ "is-active": user.match }' class='dropdown-item'>
+            <div ng-click='handleClick(user.userID)' ng-class='{ "is-active": user.match }' class='dropdown-item'>
             {{user.name}}
             </div>
             </div>
