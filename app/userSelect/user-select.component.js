@@ -8,7 +8,8 @@ function userSelectController($scope, $element) {
   ];
   $scope.filteredUsers = ctrl.users
   $scope.showUserSelect = false
-  $scope.matchedUser = $scope.filteredUsers[0]
+  $scope.matchedUser = $scope.filteredUsers[$scope.filteredUsers.indexOf(item => item.match === true)]
+  $scope.active = 'is-active'
 
   $scope.$on('textToUserSelect', (events, text, key) => {
     if (key !== 'Enter' && key !== 'ArrowUp' && key !== 'ArrowDown') {
@@ -36,7 +37,7 @@ function userSelectController($scope, $element) {
     const filteredUsers = [...ctrl.users]
       .filter(user => user.name.toLowerCase().includes(nameSubStr))
       .map((item, index) => {
-        return index === 0 ? {...item, match: true} : {...item, match: false}
+        return index === 0 ? { ...item, match: true } : { ...item, match: false }
       })
     if (filteredUsers.length) {
       $scope.filteredUsers = filteredUsers
@@ -48,6 +49,10 @@ function userSelectController($scope, $element) {
     $scope.$apply()
   }
 
+  $scope.setMatchedUser = function () {
+    $scope.matchedUser = $scope.filteredUsers[$scope.filteredUsers.findIndex(user => user.match)]
+  }
+
   $scope.watchKey = function (key) {
     const currentMatchIndex = $scope.filteredUsers.findIndex(user => user.match)
     if (key === 'Enter' && $scope.showUserSelect) {
@@ -57,13 +62,34 @@ function userSelectController($scope, $element) {
     } else if (key === 'ArrowDown') {
       //change the class to the next item in the list and change matched user to the next item in the list
       $scope.filteredUsers = $scope.filteredUsers.map((item, index) => {
-        return index === currentMatchIndex +1 ? {...item, match: true} : {...item, match: false}
+        if (
+          currentMatchIndex === $scope.filteredUsers.length - 1 &&
+          currentMatchIndex === index
+        ) {
+          return { ...item, match: true }
+        } else if (index === currentMatchIndex + 1) {
+          return { ...item, match: true }
+        } else {
+          return { ...item, match: false }
+        }
       })
+      $scope.setMatchedUser()
     } else if (key === 'ArrowUp') {
       $scope.filteredUsers = $scope.filteredUsers.map((item, index) => {
-        return index === currentMatchIndex - 1 ? {...item, match: true} : {...item, match: false}
+        if (
+          index === 0 &&
+          currentMatchIndex === index
+        ) {
+          return { ...item, match: true }
+        } else if (index === currentMatchIndex - 1) {
+          return { ...item, match: true }
+        } else {
+          return { ...item, match: false }
+        }
       })
+      $scope.setMatchedUser()
     }
+    $scope.$apply()
   }
 
 
@@ -76,8 +102,10 @@ angular.
       `<div ng-hide='!showUserSelect' class="dropdown is-active" >
         <div class='dropdown-menu'>
           <div class='dropdown-content'>
-            <div class='dropdown-item' ng-repeat='user in filteredUsers'>
-              {{user.name}}
+            <div  ng-repeat='user in filteredUsers'>
+            <div ng-class='{ "is-active": user.match }' class='dropdown-item'>
+            {{user.name}}
+            </div>
             </div>
           </div>
         </div>
