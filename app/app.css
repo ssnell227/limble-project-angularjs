@@ -36,3 +36,7 @@
 .dropdown-item:hover {
   background-color: #aeddae;
 }
+
+#text-input {
+  width: 800px;
+}
