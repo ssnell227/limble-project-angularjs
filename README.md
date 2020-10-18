@@ -12,4 +12,4 @@ A tool to make tagging users in a team easy.  If an @ symbol is entered, a dropd
 
 -Follows one-way data-binding paradigm
 
-### Built in AngularJS and styled with Bulma
+### Bootstrapped with [angular-seed](https://github.com/angular/angular-seed) and styled with [Bulma](https://bulma.io/)
