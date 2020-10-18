@@ -10,11 +10,9 @@ function userSelectController($scope, $element) {
 
 
 
-  ctrl.filteredUsers = ctrl.users
+  ctrl.filteredUsers = ctrl.users.map((item, index) => index === 0 ? { ...item, match: true } : { ...item, match: false })
   ctrl.showUserSelect = false
-  ctrl.matchedUser = ctrl.filteredUsers[ctrl.filteredUsers.indexOf(item => item.match === true)]
-  ctrl.active = 'is-active'
-
+  ctrl.matchedUser = ctrl.users[0]
 
   ctrl.toggleUserSelect = function (text) {
     if (
@@ -28,13 +26,80 @@ function userSelectController($scope, $element) {
     }
   }
 
-  ctrl.$onChanges = (changes) => {
-    console.log(changes)
-    ctrl.toggleUserSelect(changes.currentText.currentValue)
-    console.log(ctrl.showUserSelect)
+  ctrl.filterUsers = function (text) {
+    let nameSubStr = text.substring(text.lastIndexOf('@') + 1).toLowerCase()
+    const filteredUsers = [...ctrl.users]
+      .filter(user => user.name.toLowerCase().includes(nameSubStr))
+      .map((item, index) => {
+        return index === 0 ? { ...item, match: true } : { ...item, match: false }
+      })
+    if (filteredUsers.length) {
+      ctrl.filteredUsers = filteredUsers
+      ctrl.matchedUser = filteredUsers[0]
+    } else {
+      ctrl.filteredUsers = ctrl.users
+      ctrl.matchedUser = ctrl.users[0]
+    }
   }
 
+  ctrl.setMatchedUser = () => {
+    ctrl.matchedUser = ctrl.filteredUsers[ctrl.filteredUsers.findIndex(user => user.match)]
+  }
 
+  ctrl.handleClick = (user) => {
+    const textWithUser = ctrl.currentText.substring(0, ctrl.currentText.lastIndexOf('@') + 1) + user.name
+    ctrl.updateText({ text: textWithUser })
+    ctrl.showUserSelect = false
+    angular.element(document).find('text-input')[0].children[0].focus()
+  }
+
+  ctrl.watchKey = (e) => {
+    const currentMatchIndex = ctrl.filteredUsers.findIndex(user => user.match)
+    if (e.key === 'Enter' && ctrl.showUserSelect) {
+      const textWithUser = ctrl.currentText.substring(0, ctrl.currentText.lastIndexOf('@') + 1) + ctrl.filteredUsers[currentMatchIndex].name
+      ctrl.updateText({ text: textWithUser })
+      ctrl.showUserSelect = false
+    } else if (e.key === 'ArrowDown') {
+      ctrl.filteredUsers = ctrl.filteredUsers.map((item, index) => {
+        if (
+          currentMatchIndex === ctrl.filteredUsers.length - 1 &&
+          currentMatchIndex === index
+        ) {
+          return { ...item, match: true }
+        } else if (index === currentMatchIndex + 1) {
+          return { ...item, match: true }
+        } else {
+          return { ...item, match: false }
+        }
+      })
+    } else if (e.key === 'ArrowUp') {
+      ctrl.filteredUsers = ctrl.filteredUsers.map((item, index) => {
+        if (
+          index === 0 &&
+          currentMatchIndex === index
+        ) {
+          return { ...item, match: true }
+        } else if (index === currentMatchIndex - 1) {
+          return { ...item, match: true }
+        } else {
+          return { ...item, match: false }
+        }
+      })
+    }
+    $scope.$apply()
+  }
+
+  //listen for up/down/enter
+  angular.element(document).find('text-input')[0].children[0].addEventListener('keydown', ctrl.watchKey)
+
+  //listen for update to current text
+  ctrl.$onChanges = (changes) => {
+    ctrl.toggleUserSelect(changes.currentText.currentValue)
+    ctrl.filterUsers(changes.currentText.currentValue)
+    ctrl.setMatchedUser()
+  }
+
+  console.log(ctrl)
 
   // $scope.showUserSelect = ctrl.toggleUserSelect(ctrl.currentText)
 
@@ -142,13 +207,14 @@ angular.
         <div class='dropdown-menu'>
           <div class='dropdown-content'>
             <div  ng-repeat='user in $ctrl.filteredUsers'>
-            <div ng-click='handleClick(user.userID)' ng-class='{ "is-active": user.match }' class='dropdown-item'>
-            {{user.name}}
-            </div>
+              <div ng-click='$ctrl.handleClick(user)' ng-class='{ "is-active" : user.match }' class='dropdown-item'>
+                {{user.name}}
+              </div>
             </div>
           </div>
         </div>
       </div>`,
+
     controller: userSelectController,
     bindings: {
       currentText: '<',

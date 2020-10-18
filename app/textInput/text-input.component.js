@@ -2,7 +2,7 @@ function textInputController($scope, $element) {
     const ctrl = this;
 
     ctrl.inputText = ''
-
+    
     // old code
     // $scope.currentText = ''
     
@@ -38,6 +38,7 @@ angular.
     component('textInput', {
         template:
     `<input
+    ng-trim='false'
     id='text-input'
     class="input"
     ng-model='$ctrl.inputText'
