@@ -92,6 +92,25 @@ function userSelectController($scope, $element) {
   //listen for up/down/enter
   angular.element(document).find('text-input')[0].children[0].addEventListener('keydown', ctrl.watchKey)
 
+  //close menu on click outside
+  const userSelect = angular.element(document)[0].addEventListener('click', (e) => {
+    if (
+      ctrl.showUserSelect &&
+      e.target !== angular.element(document).find('text-input')[0].children[0]
+      ) {
+      ctrl.showUserSelect = false
+    } else if (
+      !ctrl.showUserSelect &&
+      e.target === angular.element(document).find('text-input')[0].children[0] &&
+      (ctrl.currentText.slice(-2) === ' @' || (ctrl.currentText.length === 1 && ctrl.currentText[0] === '@'))
+      ) {
+        ctrl.showUserSelect = true
+    }
+    
+    $scope.$apply()
+    console.log(ctrl.showUserSelect)
+  })
+
   //listen for update to current text
   ctrl.$onChanges = (changes) => {
     ctrl.toggleUserSelect(changes.currentText.currentValue)
@@ -204,7 +223,7 @@ angular.
   component('userSelect', {
     template:
       `<div ng-hide='!$ctrl.showUserSelect' class="dropdown is-active" >
-        <div class='dropdown-menu'>
+        <div id='user-select' class='dropdown-menu'>
           <div class='dropdown-content'>
             <div  ng-repeat='user in $ctrl.filteredUsers'>
               <div ng-click='$ctrl.handleClick(user)' ng-class='{ "is-active" : user.match }' class='dropdown-item'>
