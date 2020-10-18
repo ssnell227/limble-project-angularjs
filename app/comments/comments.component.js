@@ -1,12 +1,6 @@
 
-function commentsController($scope) {
-    $scope.comments = [
-    ]
-
-    $scope.$on('updateComments', function (events, comment) {
-        $scope.comments = [...$scope.comments, { text: comment, time: Date.now() }]
-        $scope.$apply()
-    })
+function commentsController() {
+    
 }
 
 angular.
@@ -15,9 +9,12 @@ angular.
         template:
             `<div>
                 <h2 class='title'>Comments</h2>
-                <div ng-repeat='item in comments'>
+                <div ng-repeat='item in $ctrl.commentsArray'>
                 {{item.text}}
                 </div>
             </div>`,
-        controller: commentsController
+        controller: commentsController,
+        bindings: {
+            commentsArray: '<'
+        }
     })
