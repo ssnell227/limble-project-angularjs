@@ -1,12 +1,13 @@
 'use strict';
 
-function appController($scope, $element) {
+function appController() {
   const ctrl = this
 
   ctrl.currentText = ''
 
   ctrl.commentsArray = [{text: 'test comment', time: Date.now()}]
 
+  //functions to pass to children to update app state
   ctrl.updateCurrentText = (text) => {
     ctrl.currentText = text
   }
@@ -21,40 +22,6 @@ function appController($scope, $element) {
       ctrl.updateCommentsArray(ctrl.currentText)
     }
   }
-
-  
-
-
-  // old code
-  // $scope.currentText = ''
-
-  // $scope.submitComment = function (comment) {
-  //   $scope.$broadcast('updateComments', comment)
-  //   $scope.$broadcast('clearText')
-  // }
-
-  // $scope.handleClick = function (e) {
-  //   e.preventDefault()
-  //   console.log($scope.currentText)
-  //   $scope.submitComment($scope.currentText)
-  // }
-
-  // $scope.$on('sendCurrentText', function (events, text, key) {
-  //   $scope.$broadcast('textToUserSelect', text, key)
-  //   $scope.currentText = text
-  //   $scope.$apply()
-  // })
-
-  // $scope.$on('sendMatchedUser', function (events, user) {
-  //   $scope.$broadcast('enterMatchedUser', user)
-  //   $scope.currentText = $scope.currentText.substring(0, $scope.currentText.lastIndexOf('@') + 1) + user.name
-  //   $scope.$apply()
-  // })
-
-  // $scope.$on('submitComment', function (events, comment) {
-  //   $scope.submitComment(comment)
-  // })
-
 
 }
 

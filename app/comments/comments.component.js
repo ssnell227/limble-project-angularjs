@@ -1,7 +1,4 @@
-
-function commentsController() {
-    
-}
+'use strict';
 
 angular.
     module('myApp').
@@ -13,7 +10,6 @@ angular.
                 {{item.text}}
                 </div>
             </div>`,
-        controller: commentsController,
         bindings: {
             commentsArray: '<'
         }
